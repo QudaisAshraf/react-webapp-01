@@ -1,52 +1,42 @@
 pipeline {
     agent any
-    triggers {
-        cron('* * * * *')  // Checks for code updates every minute
-    }
     environment {
-        EMAIL_RECIPIENT = 'qudaisa.cs@gmail.com'
+        DOCKER_IMAGE = 'react-webapp:latest' // Name your Docker image
     }
+    
     stages {
-        stage('Pull') {
+        stage('Checkout') {
             steps {
-                git url: 'https://github.com/QudaisAshraf/react-webapp-01.git'
+                git url: 'https://github.com/QudaisAshraf/react-webapp-01.git', branch: 'main'
             }
         }
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    // Install dependencies and build the React app
-                    sh 'npm install'
-                    sh 'npm run build'
+                    sh 'docker build -t $DOCKER_IMAGE .'
                 }
             }
         }
-        stage('Test') {
+        stage('Run Docker Container') {
             steps {
                 script {
-                    // Placeholder for Test stage
-                    echo "No tests available"
-                }
-            }
-        }
-        stage('Deploy') {
-            steps {
-                input message: 'Approve deployment?', ok: 'Deploy'
-                script {
-                    // Docker commands to build and deploy the React app
-                    sh 'docker build -t react-app-image .'
-                    sh 'docker run -d -p 3000:3000 --name react-app react-app-image'
+                    // Stop and remove the existing container if it's running
+                    sh '''
+                    if [ $(docker ps -aq -f name=react-app) ]; then
+                        docker rm -f react-app
+                    fi
+                    '''
+                    // Run the new container
+                    sh 'docker run -d -p 3000:3000 --name react-app $DOCKER_IMAGE'
                 }
             }
         }
     }
     post {
-        
-        success {
-            mail bcc: '', body: 'The Jenkins job completed successfully.', cc: '', from: 'pc19486.qudais@gmail.com', replyTo: '', subject: 'Jenkins Job Success', to: "${env.EMAIL_RECIPIENT}"
-        }
-        failure {
-            mail bcc: '', body: 'The Latest Jenkins job failed. Please check the logs for details.', cc: '', from: 'pc19486.qudais@gmail.com', replyTo: '', subject: 'Jenkins Job Failed', to: "${env.EMAIL_RECIPIENT}"
+        always {
+            echo 'Cleaning up...'
+            // Remove unused images and dangling volumes to save space
+            sh 'docker system prune -f'
         }
     }
 }
