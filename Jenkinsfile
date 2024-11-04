@@ -39,7 +39,7 @@ pipeline {
                 emailext(
                     subject: "SUCCESS: Build Successful for ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                     body: "Good job! The build was successful.\n\nCheck it out at ${env.BUILD_URL}",
-                    to: 'your-email@example.com' // Replace with your email
+                    to: 'qudaisa.cs@gmail.com' // Replace with your email
                 )
             }
         }
@@ -49,7 +49,7 @@ pipeline {
                 emailext(
                     subject: "FAILURE: Build Failed for ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                     body: "Unfortunately, the build has failed.\n\nPlease check the details at ${env.BUILD_URL}",
-                    to: 'your-email@example.com' // Replace with your email
+                    to: 'qudaisa.cs@gmail.com' // Replace with your email
                 )
             }
         }
