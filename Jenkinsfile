@@ -33,6 +33,27 @@ pipeline {
         }
     }
     post {
+        success {
+            script {
+                // Send email notification for successful build
+                emailext(
+                    subject: "SUCCESS: Build Successful for ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                    body: "Good job! The build was successful.\n\nCheck it out at ${env.BUILD_URL}",
+                    to: 'your-email@example.com' // Replace with your email
+                )
+            }
+        }
+        failure {
+            script {
+                // Send email notification for failed build
+                emailext(
+                    subject: "FAILURE: Build Failed for ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                    body: "Unfortunately, the build has failed.\n\nPlease check the details at ${env.BUILD_URL}",
+                    to: 'your-email@example.com' // Replace with your email
+                )
+            }
+        }
+        
         always {
             echo 'Cleaning up...'
             // Remove unused images and dangling volumes to save space
