@@ -3,7 +3,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'react-webapp:latest' // Name your Docker image
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
@@ -32,6 +32,7 @@ pipeline {
             }
         }
     }
+
     post {
         success {
             script {
@@ -39,7 +40,8 @@ pipeline {
                 emailext(
                     subject: "SUCCESS: Build Successful for ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                     body: "Good job! The build was successful.\n\nCheck it out at ${env.BUILD_URL}",
-                    to: 'qudaisa.cs@gmail.com' // Replace with your email
+                    to: 'pc19486.qudais@gmail.com',
+                    from: 'qudaisa.cs@gmail.com'
                 )
             }
         }
@@ -49,7 +51,8 @@ pipeline {
                 emailext(
                     subject: "FAILURE: Build Failed for ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                     body: "Unfortunately, the build has failed.\n\nPlease check the details at ${env.BUILD_URL}",
-                    to: 'qudaisa.cs@gmail.com' // Replace with your email
+                    to: 'pc19486.qudais@gmail.com',
+                    from: 'qudaisa.cs@gmail.com'
                 )
             }
         }
