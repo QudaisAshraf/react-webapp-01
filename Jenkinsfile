@@ -20,6 +20,9 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
+                    // Prompt for permission to proceed with deployment
+                    input message: 'Do you want to deploy the application?', ok: 'Deploy'
+
                     // Stop and remove the existing container if it's running
                     sh '''
                     if [ $(docker ps -aq -f name=react-app) ]; then
@@ -40,8 +43,8 @@ pipeline {
                 emailext(
                     subject: "SUCCESS: Build Successful for ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                     body: "Good job! The build was successful.\n\nCheck it out at ${env.BUILD_URL}",
-                    to: 'pc19486.qudais@gmail.com',
-                    from: 'qudaisa.cs@gmail.com'
+                    to: 'qudaisa.cs@gmail.com',
+                    from: 'pc19486.qudais@gmail.com'
                 )
             }
         }
@@ -51,8 +54,8 @@ pipeline {
                 emailext(
                     subject: "FAILURE: Build Failed for ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                     body: "Unfortunately, the build has failed.\n\nPlease check the details at ${env.BUILD_URL}",
-                    to: 'pc19486.qudais@gmail.com',
-                    from: 'qudaisa.cs@gmail.com'
+                    to: 'qudaisa.cs@gmail.com',
+                    from: 'pc19486.qudais@gmail.com'
                 )
             }
         }
